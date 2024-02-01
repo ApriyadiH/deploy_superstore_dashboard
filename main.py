@@ -84,29 +84,33 @@ timeUnit = {
     'Bulanan':'yearmonth'
 }
 
-# st.header("Sales trend")
-# # altair membuat object berupa chart dengan data di dalam parameter
-# sales_line = alt.Chart(df[df['order_year']==CURR_YEAR]).mark_line().encode(
-#     alt.X('order_date', title='Order Date', timeUnit=timeUnit[freq]),
-#     alt.Y('sales', title='Revenue', aggregate='sum')
-# )
+st.header("Sales trend")
+# altair membuat object berupa chart dengan data di dalam parameter
+sales_line = alt.Chart(df[df['order_year']==CURR_YEAR]).mark_line().encode(
+    alt.X('order_date', title='Order Date', timeUnit=timeUnit[freq]),
+    alt.Y('sales', title='Revenue', aggregate='sum')
+)
 
-# st.altair_chart(sales_line,use_container_width=True)
+st.altair_chart(sales_line,use_container_width=True)
 
 sales_bar = alt.Chart(df[df['order_year']==CURR_YEAR]).mark_bar().encode(
-    column='Category:N',
+    column='category:N',
     y='sum(sales):Q',
     color='segment:N',
     x='segment:N'
-).properties(width=150,height=220)
+).properties(width=280,height=220)
 
 st.altair_chart(sales_bar)
 
+# Scatter plot Profit vs Sales
 
-# # Bikin 4 kolom berisi sales dari tiap kategori
-# # Setiap kolom mewakili region yang berbeda
+st.header("Sales vs Profit Correlation")
+_, midcol, _ = st.columns([1,3,1])
 
-
-# st.dataframe(df)
-
-# st.dataframe(data, use_container_width=True)
+with midcol:
+    scatter = alt.Chart(df[(df['order_year']==CURR_YEAR)&(df['sales']<6000)]).mark_point().encode(
+        x='sales:Q',
+        y='profit:Q',
+        color='region:N'
+    )
+    st.altair_chart(scatter, use_container_width=True)
